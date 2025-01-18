@@ -1,21 +1,23 @@
 import { createLogger, format, transports } from "winston";
 
-const customFormat = format.printf(({ timestamp, level, message, stack }) => {
+const { printf, combine, timestamp, errors, colorize } = format;
+
+const customFormat = printf(({ timestamp, level, message, stack }) => {
   return `${timestamp}: ${level}: ${message}${stack ? `: ${stack}` : ""}`;
 });
 
 const logger = createLogger({
   level: Bun.env.LOG_LEVEL,
-  format: format.combine(
-    format.timestamp({
+  format: combine(
+    timestamp({
       format: Bun.env.TIMESTAMP_FORMAT,
     }),
-    format.errors({ stack: true }),
+    errors({ stack: true }),
     customFormat
   ),
   transports: [
     new transports.Console({
-      format: format.combine(format.colorize(), customFormat),
+      format: combine(colorize(), customFormat),
     }),
     new transports.File({
       filename: "logs/application.log",
