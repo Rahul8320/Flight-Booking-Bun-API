@@ -1,9 +1,12 @@
 "use strict";
 import { Model } from "sequelize";
 
-export default (sequelize, DataTypes) => {
+export default (sequelize: any, DataTypes: any) => {
   class Airplane extends Model {
-    static associate(models) {
+    declare modelNumber: string;
+    declare capacity: number;
+
+    static associate(_models: any) {
       // define association here
     }
   }
