@@ -9,32 +9,19 @@ This is a simple flight booking API built with Bun.
 ## Installation
 
 1. Clone the repository
-2. Copy .env.sample to .env and update the variables
-3. Run `bun install` to install dependencies
-4. Add the bellow into `src/config/config.json` file to your desired database. For example, if you want to use sqlite, change the `dialect` to `sqlite` and update the other variables.
+2. Copy .env.sample to .env and update the variables. For example, you can refer the following
 
-```json
-{
-  "development": {
-    "dialect": "sqlite",
-    "storage": "./database.sqlite",
-    "logging": "info",
-    "pool": {
-      "max": 5,
-      "min": 0,
-      "idle": 10000
-    },
-    "define": {
-      "timestamps": true,
-      "underscored": true
-    }
-  }
-}
+```env
+  PORT=3000
+  LOG_LEVEL=info
+  TIMESTAMP_FORMAT=YYYY-MM-DD HH:mm:ss
+
+  DATABASE_URL="file:./dev.db"
 ```
 
-5. Run `bunx sequelize db:migrate` to create the tables
-
-6. Run `bun start` to start the server
+3. Run `bun install` to install dependencies
+4. Run `bunx prisma migrate deploy` to update migrations
+5. Run `bun start` to start the server
 
 To run:
 
@@ -53,5 +40,6 @@ bun test
 - [Express](https://expressjs.com/)
 - [Winston](https://github.com/winstonjs/winston)
 - [TypeScript](https://www.typescriptlang.org/)
+- [Prisma](https://www.prisma.io/)
 
-This project was created using `bun init` in bun v1.1.45. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+  This project was created using `bun init` in bun v1.1.45. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
