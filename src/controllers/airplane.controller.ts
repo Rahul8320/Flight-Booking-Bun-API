@@ -1,13 +1,14 @@
 import { logger } from "../config";
-import { StatusCodes } from "../models/statusCodes";
+import { StatusCodes } from "../models";
 import { AirplaneService } from "../services";
 import type { Request, Response } from "express";
 
 export class AirplaneController {
-  private _airplaneService;
+  private _airplaneService: AirplaneService;
 
   constructor() {
     this._airplaneService = new AirplaneService();
+    this.createAirplane = this.createAirplane.bind(this);
   }
 
   /**
@@ -31,10 +32,10 @@ export class AirplaneController {
         error: null,
       });
     } catch (err) {
-      logger.error("Something wrong happend!", err);
+      logger.error("Something wrong happened!", err);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Something wrong happend!",
+        message: "Something wrong happened!",
         data: null,
         error: err,
       });

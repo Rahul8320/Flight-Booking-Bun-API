@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { StatusCodes } from "../models/statusCodes";
+import { StatusCodes } from "../models";
 import { logger } from "../config";
 
 class HealthController {

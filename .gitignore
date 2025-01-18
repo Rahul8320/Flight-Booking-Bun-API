@@ -178,4 +178,5 @@ dist
 src/config/config.json
 
 # SQLite database files
-src/database/*.sqlite
+prisma/*.db
+prisma/*.db-*

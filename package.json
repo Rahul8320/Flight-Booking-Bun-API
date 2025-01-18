@@ -16,7 +16,9 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@prisma/client": "6.2.1",
     "express": "^4.21.2",
+    "prisma": "^6.2.1",
     "sequelize": "^6.37.5",
     "sequelize-cli": "^6.6.2",
     "sqlite3": "^5.1.7",
