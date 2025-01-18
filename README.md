@@ -11,7 +11,30 @@ This is a simple flight booking API built with Bun.
 1. Clone the repository
 2. Copy .env.sample to .env and update the variables
 3. Run `bun install` to install dependencies
-4. Run `bun start` to start the server
+4. Add the bellow into `src/config/config.json` file to your desired database. For example, if you want to use sqlite, change the `dialect` to `sqlite` and update the other variables.
+
+```json
+{
+  "development": {
+    "dialect": "sqlite",
+    "storage": "./database.sqlite",
+    "logging": "info",
+    "pool": {
+      "max": 5,
+      "min": 0,
+      "idle": 10000
+    },
+    "define": {
+      "timestamps": true,
+      "underscored": true
+    }
+  }
+}
+```
+
+5. Run `bunx sequelize db:migrate` to create the tables
+
+6. Run `bun start` to start the server
 
 To run:
 

@@ -176,3 +176,6 @@ dist
 
 # squlize db config
 src/config/config.json
+
+# SQLite database files
+src/database/*.sqlite
