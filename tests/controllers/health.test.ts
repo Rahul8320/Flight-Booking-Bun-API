@@ -2,7 +2,7 @@ import { describe, it, expect, mock, spyOn } from "bun:test";
 import type { Request, Response } from "express";
 import { HealthController } from "../../src/controllers";
 import { StatusCodes } from "../../src/models/statusCodes";
-import { logger } from "../../src/configs";
+import { logger } from "../../src/config";
 
 describe("HealthController", () => {
   it("should return a healthy status", () => {

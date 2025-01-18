@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { StatusCodes } from "../models/statusCodes";
-import { logger } from "../configs";
+import { logger } from "../config";
 
 class HealthController {
   public getHealth(_req: Request, res: Response) {
