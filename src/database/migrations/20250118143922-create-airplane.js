@@ -16,6 +16,7 @@ export async function up(queryInterface, Sequelize) {
     capacity: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
     createdAt: {
       allowNull: false,

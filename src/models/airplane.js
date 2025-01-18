@@ -18,6 +18,7 @@ export default (sequelize, DataTypes) => {
       capacity: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0,
       },
     },
     {
