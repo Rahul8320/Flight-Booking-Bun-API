@@ -31,14 +31,19 @@ export class AirplaneController {
         data: airplane,
         error: null,
       });
-    } catch (err) {
-      logger.error("Something wrong happened!", err);
+
+      return;
+    } catch (err: any) {
+      logger.error(err.message || "Something wrong happened!", err);
+
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "Something wrong happened!",
         data: null,
-        error: err,
+        error: err.message || "Please try again later!",
       });
+
+      return;
     }
   }
 }
