@@ -2,6 +2,7 @@ import { logger } from "../config";
 import { StatusCodes } from "../models";
 import { AirplaneService } from "../services";
 import type { Request, Response } from "express";
+import { FailureResponse, SuccessResponse } from "../utils";
 
 export class AirplaneController {
   private _airplaneService: AirplaneService;
@@ -25,23 +26,21 @@ export class AirplaneController {
         capacity,
       });
 
-      res.status(StatusCodes.CREATED).json({
-        success: true,
-        message: "Airplane created successfully",
-        data: airplane,
-        error: null,
-      });
+      res
+        .status(StatusCodes.CREATED)
+        .json(SuccessResponse.airplaneCreated(airplane));
 
       return;
     } catch (err: any) {
       logger.error(err.message || "Something wrong happened!", err);
 
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        success: false,
-        message: "Something wrong happened!",
-        data: null,
-        error: err.message || "Please try again later!",
-      });
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json(
+          FailureResponse.serverError(
+            err.message || "Something wrong happened!"
+          )
+        );
 
       return;
     }

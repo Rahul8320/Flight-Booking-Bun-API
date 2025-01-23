@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { logger } from "../config";
+import { ApiExecption } from "../utils";
 
 export interface IBaseRepository<T> {
   create(data: Omit<T, "id" | "createdAt" | "updatedAt">): Promise<T>;
@@ -28,9 +29,9 @@ export abstract class BaseRepository<T extends { id: number }>
         data,
       });
       return result;
-    } catch (err) {
+    } catch (err: any) {
       logger.error("Error creating data", err);
-      throw err;
+      throw new ApiExecption("Error creating data", err);
     }
   }
 
@@ -40,9 +41,9 @@ export abstract class BaseRepository<T extends { id: number }>
         where: { id },
       });
       return result;
-    } catch (err) {
+    } catch (err: any) {
       logger.error(`Error deleting data with id: ${id}`, err);
-      throw err;
+      throw new ApiExecption(`Error deleting data with id: ${id}`, err);
     }
   }
 
@@ -52,9 +53,9 @@ export abstract class BaseRepository<T extends { id: number }>
         where: { id },
       });
       return result;
-    } catch (err) {
+    } catch (err: any) {
       logger.error(`Error getting data with id: ${id}`, err);
-      throw err;
+      throw new ApiExecption(`Error getting data with id: ${id}`, err);
     }
   }
 
@@ -62,9 +63,9 @@ export abstract class BaseRepository<T extends { id: number }>
     try {
       const result = await (this.prisma[this.modelType] as any).findMany();
       return result;
-    } catch (err) {
+    } catch (err: any) {
       logger.error("Error getting all data", err);
-      throw err;
+      throw new ApiExecption("Error getting all data", err);
     }
   }
 
@@ -78,9 +79,9 @@ export abstract class BaseRepository<T extends { id: number }>
         data,
       });
       return result;
-    } catch (err) {
+    } catch (err: any) {
       logger.error(`Error updating data with id: ${id}`, err);
-      throw err;
+      throw new ApiExecption(`Error updating data with id: ${id}`, err);
     }
   }
 }
