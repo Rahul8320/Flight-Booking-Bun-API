@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "../models/statusCodes";
-import { FailureResponse, type IValidationData } from "../utils";
+import { AirplaneError, FailureResponse, type IValidationData } from "../utils";
 
 export function validateCreateAirplane(
   req: Request,
@@ -12,31 +12,25 @@ export function validateCreateAirplane(
   const errors: IValidationData[] = [];
 
   if (!modelNumber) {
-    errors.push({ field: "modelNumber", message: "ModelNumber is required!" });
+    errors.push(AirplaneError.ValidationError.ModelNumberRequired);
   }
 
   if (modelNumber && typeof modelNumber !== "string") {
-    errors.push({
-      field: "modelNumber",
-      message: "ModelNumber must be a string!",
-    });
+    errors.push(AirplaneError.ValidationError.ModelNumberRequired);
   }
 
   if (capacity && typeof capacity !== "number") {
-    errors.push({ field: "capacity", message: "Capacity must be a number!" });
+    errors.push(AirplaneError.ValidationError.CapacityMustBeNumber);
   }
 
   if (capacity && capacity <= 0) {
-    errors.push({
-      field: "capacity",
-      message: "Capacity must be greater than 0!",
-    });
+    errors.push(AirplaneError.ValidationError.CapacityGreaterThanZero);
   }
 
   if (Object.keys(errors).length > 0) {
     res
       .status(StatusCodes.BAD_REQUEST)
-      .json(FailureResponse.validationFailure(errors));
+      .json(FailureResponse.requestValidationFailure(errors));
 
     return;
   }

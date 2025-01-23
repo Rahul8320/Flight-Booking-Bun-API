@@ -5,7 +5,7 @@ export class FailureResponse {
     return new ApiFailureResponse("Something went wrong!", error);
   }
 
-  static validationFailure(data: IValidationData[]) {
+  static requestValidationFailure(data: IValidationData[]) {
     return new ApiFailureResponse("Invalid request body", data);
   }
 }
