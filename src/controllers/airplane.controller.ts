@@ -1,8 +1,18 @@
+import type { Request, Response } from "express";
+import type { Airplane } from "@prisma/client";
 import { logger } from "../config";
 import { StatusCodes } from "../models";
-import { AirplaneService } from "../services";
-import type { Request, Response } from "express";
-import { FailureResponse, SuccessResponse } from "../utils";
+import {
+  AirplaneService,
+  ServiceSuccessResult,
+  ServiceValidationErrorResult,
+  type ServiceResult,
+} from "../services";
+import {
+  FailureResponse,
+  SuccessResponse,
+  type IValidationData,
+} from "../utils";
 
 export class AirplaneController {
   private _airplaneService: AirplaneService;
@@ -21,14 +31,24 @@ export class AirplaneController {
     try {
       const { modelNumber, capacity } = req.body;
 
-      const airplane = await this._airplaneService.createAirplane({
+      const response = await this._airplaneService.createAirplane({
         modelNumber,
         capacity,
       });
 
+      const result = this.handleResponse(response);
+
+      if (response.statusCode == StatusCodes.CREATED) {
+        res
+          .status(response.statusCode)
+          .json(SuccessResponse.AirplaneCreated(result as Airplane));
+
+        return;
+      }
+
       res
-        .status(StatusCodes.CREATED)
-        .json(SuccessResponse.airplaneCreated(airplane));
+        .status(response.statusCode)
+        .json(FailureResponse.ValidationFailure(result as IValidationData[]));
 
       return;
     } catch (err: any) {
@@ -37,12 +57,24 @@ export class AirplaneController {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json(
-          FailureResponse.serverError(
+          FailureResponse.ServerError(
             err.message || "Something wrong happened!"
           )
         );
 
       return;
+    }
+  }
+
+  private handleResponse<T>(
+    result: ServiceResult<T>
+  ): T | IValidationData[] | null {
+    if (result instanceof ServiceSuccessResult) {
+      return result.data;
+    } else if (result instanceof ServiceValidationErrorResult) {
+      return result.validationErrors;
+    } else {
+      return null;
     }
   }
 }

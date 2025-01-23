@@ -30,7 +30,7 @@ export function validateCreateAirplane(
   if (Object.keys(errors).length > 0) {
     res
       .status(StatusCodes.BAD_REQUEST)
-      .json(FailureResponse.requestValidationFailure(errors));
+      .json(FailureResponse.ValidationFailure(errors));
 
     return;
   }
