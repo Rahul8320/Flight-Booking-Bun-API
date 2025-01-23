@@ -20,12 +20,14 @@ export class AirplaneController {
   constructor() {
     this._airplaneService = new AirplaneService();
     this.createAirplane = this.createAirplane.bind(this);
+    this.getAirplanes = this.getAirplanes.bind(this);
   }
 
   /**
    * @description Create a new airplane
    * @param {Request} req - The request object
    * @param {Response} res - The response object
+   * @returns newly created airplane
    */
   async createAirplane(req: Request, res: Response): Promise<void> {
     try {
@@ -49,6 +51,44 @@ export class AirplaneController {
       res
         .status(response.statusCode)
         .json(FailureResponse.ValidationFailure(result as IValidationData[]));
+
+      return;
+    } catch (err: any) {
+      logger.error(err.message || "Something wrong happened!", err);
+
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json(
+          FailureResponse.ServerError(
+            err.message || "Something wrong happened!"
+          )
+        );
+
+      return;
+    }
+  }
+
+  /**
+   * @description Fetched all airplanes
+   * @param {Request} _req - The request object
+   * @param {Response} res - The response object
+   * @returns All airplanes
+   */
+  async getAirplanes(_req: Request, res: Response): Promise<void> {
+    try {
+      const response = await this._airplaneService.getAirplanes();
+
+      const result = this.handleResponse(response);
+
+      if (response.statusCode == StatusCodes.OK) {
+        res
+          .status(response.statusCode)
+          .json(SuccessResponse.AirplaneFetched(result as Airplane[]));
+
+        return;
+      }
+
+      res.status(response.statusCode).json(FailureResponse.ResourceNotFound());
 
       return;
     } catch (err: any) {

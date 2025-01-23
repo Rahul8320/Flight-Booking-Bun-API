@@ -9,4 +9,8 @@ export class SuccessResponse {
   static AirplaneCreated(data: Airplane) {
     return new ApiSuccessResponse("Airplane created successfully!", data);
   }
+
+  static AirplaneFetched(data: Airplane[]) {
+    return new ApiSuccessResponse("Airplanes fetched successfully!", data);
+  }
 }

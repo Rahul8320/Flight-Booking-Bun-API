@@ -8,4 +8,8 @@ export class FailureResponse {
   static ValidationFailure(data: IValidationData[]) {
     return new ApiFailureResponse("Validation Failed!", data);
   }
+
+  static ResourceNotFound(data: any | null = null) {
+    return new ApiFailureResponse("Resource not found!", data);
+  }
 }

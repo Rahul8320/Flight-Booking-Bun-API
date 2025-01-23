@@ -1,6 +1,6 @@
 import { AirplaneRepository } from "../repositories";
 import type { Airplane } from "@prisma/client";
-import { AirplaneError } from "../utils";
+import { AirplaneError, ApiExecption } from "../utils";
 import {
   ServiceResult,
   ServiceSuccessResult,
@@ -33,7 +33,21 @@ export class AirplaneService {
       const airplane = await this._airplaneRepository.create(data);
       return new ServiceSuccessResult<Airplane>(StatusCodes.CREATED, airplane);
     } catch (err: any) {
-      throw err;
+      throw new ApiExecption("Failed to create airplane!", err);
+    }
+  }
+
+  async getAirplanes(): Promise<ServiceResult<Airplane[]>> {
+    try {
+      const airplanes = await this._airplaneRepository.getAll();
+
+      if (airplanes.length === 0) {
+        return new ServiceResult(StatusCodes.NOT_FOUND);
+      }
+
+      return new ServiceSuccessResult<Airplane[]>(StatusCodes.OK, airplanes);
+    } catch (err: any) {
+      throw new ApiExecption("Failed to fetch airplanes!", err);
     }
   }
 }
