@@ -35,6 +35,12 @@ To run tests:
 bun test
 ```
 
+To seed the db:
+
+```bash
+bun run prisma-seed
+```
+
 ## Dependencies
 
 - [Express](https://expressjs.com/)
