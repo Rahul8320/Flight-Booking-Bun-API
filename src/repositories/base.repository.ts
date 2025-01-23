@@ -1,6 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { logger } from "../config";
-import { ApiExecption } from "../utils";
 
 export interface IBaseRepository<T> {
   create(data: Omit<T, "id" | "createdAt" | "updatedAt">): Promise<T>;
@@ -24,64 +22,39 @@ export abstract class BaseRepository<T extends { id: number }>
   }
 
   async create(data: Omit<T, "id" | "createdAt" | "updatedAt">): Promise<T> {
-    try {
-      const result = await (this.prisma[this.modelType] as any).create({
-        data,
-      });
-      return result;
-    } catch (err: any) {
-      logger.error("Error creating data", err);
-      throw new ApiExecption("Error creating data", err);
-    }
+    const result = await (this.prisma[this.modelType] as any).create({
+      data,
+    });
+    return result;
   }
 
   async delete(id: number): Promise<T> {
-    try {
-      const result = await (this.prisma[this.modelType] as any).delete({
-        where: { id },
-      });
-      return result;
-    } catch (err: any) {
-      logger.error(`Error deleting data with id: ${id}`, err);
-      throw new ApiExecption(`Error deleting data with id: ${id}`, err);
-    }
+    const result = await (this.prisma[this.modelType] as any).delete({
+      where: { id },
+    });
+    return result;
   }
 
   async get(id: number): Promise<T | null> {
-    try {
-      const result = await (this.prisma[this.modelType] as any).findUnique({
-        where: { id },
-      });
-      return result;
-    } catch (err: any) {
-      logger.error(`Error getting data with id: ${id}`, err);
-      throw new ApiExecption(`Error getting data with id: ${id}`, err);
-    }
+    const result = await (this.prisma[this.modelType] as any).findUnique({
+      where: { id },
+    });
+    return result;
   }
 
   async getAll(): Promise<T[]> {
-    try {
-      const result = await (this.prisma[this.modelType] as any).findMany();
-      return result;
-    } catch (err: any) {
-      logger.error("Error getting all data", err);
-      throw new ApiExecption("Error getting all data", err);
-    }
+    const result = await (this.prisma[this.modelType] as any).findMany();
+    return result;
   }
 
   async update(
     id: number,
     data: Partial<Omit<T, "id" | "createdAt" | "updatedAt">>
   ): Promise<T> {
-    try {
-      const result = await (this.prisma[this.modelType] as any).update({
-        where: { id },
-        data,
-      });
-      return result;
-    } catch (err: any) {
-      logger.error(`Error updating data with id: ${id}`, err);
-      throw new ApiExecption(`Error updating data with id: ${id}`, err);
-    }
+    const result = await (this.prisma[this.modelType] as any).update({
+      where: { id },
+      data,
+    });
+    return result;
   }
 }
