@@ -8,7 +8,6 @@ export function validateCreateAirplane(
   next: NextFunction
 ) {
   const { modelNumber, capacity } = req.body;
-
   let errors: IValidationData[] = [];
 
   errors = validateModelNumber(modelNumber, errors);
@@ -25,6 +24,37 @@ export function validateCreateAirplane(
   next();
 }
 
+export function validateAirplaneId(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { id } = req.params;
+  let errors: IValidationData[] = [];
+
+  errors = validateId(id, errors);
+
+  if (Object.keys(errors).length > 0) {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(FailureResponse.ValidationFailure(errors));
+
+    return;
+  }
+
+  next();
+}
+
+function validateId(id: any, errors: IValidationData[]) {
+  const num = Number(id);
+
+  if (isNaN(num) || isFinite(num) === false) {
+    errors.push(AirplaneError.ValidationError.IdMustBeNumber);
+  }
+
+  return errors;
+}
+
 function validateModelNumber(
   modelNumber: any,
   errors: IValidationData[]
@@ -34,7 +64,7 @@ function validateModelNumber(
   }
 
   if (modelNumber && typeof modelNumber !== "string") {
-    errors.push(AirplaneError.ValidationError.ModelNumberRequired);
+    errors.push(AirplaneError.ValidationError.ModelNumberMustBeString);
   }
 
   return errors;

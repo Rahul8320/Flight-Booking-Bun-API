@@ -1,3 +1,6 @@
-import { validateCreateAirplane } from "./airplane-middleware";
+import {
+  validateCreateAirplane,
+  validateAirplaneId,
+} from "./airplane-middleware";
 
-export { validateCreateAirplane };
+export { validateCreateAirplane, validateAirplaneId };

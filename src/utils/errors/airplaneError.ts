@@ -20,5 +20,9 @@ export class AirplaneError {
       field: "capacity",
       message: "Capacity must be greater than 0!",
     },
+    IdMustBeNumber: {
+      field: "id",
+      message: "ID must be a number!",
+    },
   };
 }
