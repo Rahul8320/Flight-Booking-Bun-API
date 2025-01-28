@@ -4,10 +4,7 @@ export interface IBaseRepository<T> {
   create(data: Omit<T, "id" | "createdAt" | "updatedAt">): Promise<T>;
   get(id: number): Promise<T | null>;
   getAll(): Promise<T[]>;
-  update(
-    id: number,
-    data: Partial<Omit<T, "id" | "createdAt" | "updatedAt">>
-  ): Promise<T>;
+  update(id: number, data: Partial<Omit<T, "id" | "createdAt">>): Promise<T>;
   delete(id: number): Promise<T>;
 }
 
@@ -49,7 +46,7 @@ export abstract class BaseRepository<T extends { id: number }>
 
   async update(
     id: number,
-    data: Partial<Omit<T, "id" | "createdAt" | "updatedAt">>
+    data: Partial<Omit<T, "id" | "createdAt">>
   ): Promise<T> {
     const result = await (this.prisma[this.modelType] as any).update({
       where: { id },

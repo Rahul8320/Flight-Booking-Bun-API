@@ -45,6 +45,30 @@ export function validateAirplaneId(
   next();
 }
 
+export function validateUpdateAirplane(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { id } = req.params;
+  const { capacity } = req.body;
+
+  let errors: IValidationData[] = [];
+
+  errors = validateId(id, errors);
+  errors = validateCapacity(capacity, errors);
+
+  if (Object.keys(errors).length > 0) {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(FailureResponse.ValidationFailure(errors));
+
+    return;
+  }
+
+  next();
+}
+
 function validateId(id: any, errors: IValidationData[]) {
   const num = Number(id);
 

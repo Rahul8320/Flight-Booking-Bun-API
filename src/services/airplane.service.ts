@@ -99,6 +99,7 @@ export class AirplaneService {
       }
 
       airplane.capacity = capacity;
+      airplane.updatedAt = new Date();
 
       const updatedAirplane = await this._airplaneRepository.update(
         id,
