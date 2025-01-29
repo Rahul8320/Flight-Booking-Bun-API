@@ -6,9 +6,7 @@ import {
   ServiceSuccessResult,
   ServiceValidationErrorResult,
 } from "./service-result";
-import { StatusCodes } from "../models";
-
-type CreateAirplaneInput = Omit<Airplane, "id" | "createdAt" | "updatedAt">;
+import { StatusCodes, type ICreateAirplaneInput } from "../models";
 
 export class AirplaneService {
   private _airplaneRepository: AirplaneRepository;
@@ -23,7 +21,7 @@ export class AirplaneService {
    * @returns {Promise<ServiceResult<Airplane>>} Created airplane or validation errors
    */
   async createAirplane(
-    input: CreateAirplaneInput
+    input: ICreateAirplaneInput
   ): Promise<ServiceResult<Airplane>> {
     try {
       const isModelNumberExists =

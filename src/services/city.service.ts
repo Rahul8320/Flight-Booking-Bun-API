@@ -6,9 +6,7 @@ import {
   type ServiceResult,
 } from "./service-result";
 import { ApiExecption, CityError } from "../utils";
-import { StatusCodes } from "../models";
-
-type CreateCityInput = Omit<City, "id" | "createdAt" | "updatedAt">;
+import { StatusCodes, type ICreateCityInput } from "../models";
 
 export class CityService {
   private _cityRepository: CityRepository;
@@ -22,7 +20,7 @@ export class CityService {
    * @param {CreateCityInput} input - The city input data
    * @returns {Promise<ServiceResult<City>>} Created city or validation errors
    */
-  async createCity(input: CreateCityInput): Promise<ServiceResult<City>> {
+  async createCity(input: ICreateCityInput): Promise<ServiceResult<City>> {
     try {
       const isCityExists = await this._cityRepository.IsCityExists(input.name);
 
