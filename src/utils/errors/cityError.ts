@@ -32,6 +32,10 @@ export class CityError {
       field: "code",
       message: "City code can not be more than 10 characters!",
     },
+    IdMustBeNumber: {
+      field: "id",
+      message: "ID must be a number!",
+    },
   };
   static ServiceError = {
     CityNameExists: {

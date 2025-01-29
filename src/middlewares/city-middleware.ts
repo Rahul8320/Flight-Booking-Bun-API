@@ -23,6 +23,38 @@ export function validateCreateCity(
 
   next();
 }
+
+export function validateCityId(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { id } = req.params;
+  let errors: IValidationData[] = [];
+
+  errors = validateId(id, errors);
+
+  if (Object.keys(errors).length > 0) {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(FailureResponse.ValidationFailure(errors));
+
+    return;
+  }
+
+  next();
+}
+
+function validateId(id: any, errors: IValidationData[]) {
+  const num = Number(id);
+
+  if (isNaN(num) || isFinite(num) === false) {
+    errors.push(CityError.ValidationError.IdMustBeNumber);
+  }
+
+  return errors;
+}
+
 function validateCityName(
   name: any,
   errors: IValidationData[]

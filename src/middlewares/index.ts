@@ -4,11 +4,12 @@ import {
   validateUpdateAirplane,
 } from "./airplane-middleware";
 
-import { validateCreateCity } from "./city-middleware";
+import { validateCreateCity, validateCityId } from "./city-middleware";
 
 export {
   validateCreateAirplane,
   validateAirplaneId,
   validateUpdateAirplane,
   validateCreateCity,
+  validateCityId,
 };
