@@ -8,10 +8,6 @@ export class AirplaneError {
       field: "modelNumber",
       message: "ModelNumber must be a string!",
     },
-    ModelNumberExists: {
-      field: "modelNumber",
-      message: "Model number already exists!",
-    },
     CapacityMustBeNumber: {
       field: "capacity",
       message: "Capacity must be a number!",
@@ -23,6 +19,13 @@ export class AirplaneError {
     IdMustBeNumber: {
       field: "id",
       message: "ID must be a number!",
+    },
+  };
+
+  static ServiceError = {
+    ModelNumberExists: {
+      field: "modelNumber",
+      message: "Model number already exists!",
     },
   };
 }

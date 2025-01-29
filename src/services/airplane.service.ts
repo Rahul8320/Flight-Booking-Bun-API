@@ -19,25 +19,23 @@ export class AirplaneService {
 
   /**
    * @description Create a new airplane
-   * @param {Object} data - The airplane data
-   * @param {string} data.modelNumber - Model number of the airplane
-   * @param {number} data.capacity - Capacity of the airplane
+   * @param {CreateAirplaneInput} input - The airplane input data
    * @returns {Promise<ServiceResult<Airplane>>} Created airplane or validation errors
    */
   async createAirplane(
-    data: CreateAirplaneInput
+    input: CreateAirplaneInput
   ): Promise<ServiceResult<Airplane>> {
     try {
       const isModelNumberExists =
-        await this._airplaneRepository.IsModelNumberExists(data.modelNumber);
+        await this._airplaneRepository.IsModelNumberExists(input.modelNumber);
 
       if (isModelNumberExists) {
         return new ServiceValidationErrorResult(StatusCodes.BAD_REQUEST, [
-          AirplaneError.ValidationError.ModelNumberExists,
+          AirplaneError.ServiceError.ModelNumberExists,
         ]);
       }
 
-      const airplane = await this._airplaneRepository.create(data);
+      const airplane = await this._airplaneRepository.create(input);
       return new ServiceSuccessResult<Airplane>(StatusCodes.CREATED, airplane);
     } catch (err: any) {
       throw new ApiExecption("Failed to create airplane!", err);
