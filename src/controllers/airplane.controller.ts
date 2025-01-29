@@ -2,14 +2,10 @@ import type { Request, Response } from "express";
 import type { Airplane } from "@prisma/client";
 import { logger } from "../config";
 import { StatusCodes } from "../models";
-import {
-  AirplaneService,
-  ServiceSuccessResult,
-  ServiceValidationErrorResult,
-  type ServiceResult,
-} from "../services";
+import { AirplaneService } from "../services";
 import {
   FailureResponse,
+  handleResponse,
   SuccessResponse,
   type IValidationData,
 } from "../utils";
@@ -41,7 +37,7 @@ export class AirplaneController {
         capacity,
       });
 
-      const result = this.handleResponse(response);
+      const result = handleResponse(response);
 
       if (response.statusCode === StatusCodes.CREATED) {
         res
@@ -81,7 +77,7 @@ export class AirplaneController {
     try {
       const response = await this._airplaneService.getAirplanes();
 
-      const result = this.handleResponse(response);
+      const result = handleResponse(response);
 
       if (response.statusCode === StatusCodes.OK) {
         res
@@ -122,7 +118,7 @@ export class AirplaneController {
 
       const response = await this._airplaneService.getAirplane(intID);
 
-      const result = this.handleResponse(response);
+      const result = handleResponse(response);
 
       if (response.statusCode === StatusCodes.OK) {
         res
@@ -167,7 +163,7 @@ export class AirplaneController {
         capacity
       );
 
-      const result = this.handleResponse(response);
+      const result = handleResponse(response);
 
       if (response.statusCode == StatusCodes.OK) {
         res
@@ -208,7 +204,7 @@ export class AirplaneController {
 
       const response = await this._airplaneService.deleteAirplane(intID);
 
-      const result = this.handleResponse(response);
+      const result = handleResponse(response);
 
       if (response.statusCode == StatusCodes.OK) {
         res
@@ -233,23 +229,6 @@ export class AirplaneController {
         );
 
       return;
-    }
-  }
-
-  /**
-   * @description Helper method to handle service response and extract appropriate data
-   * @param {ServiceResult<T>} result - Service result containing success data or validation errors
-   * @returns {T | IValidationData[] | null} Extracted data, validation errors, or null if not found
-   */
-  private handleResponse<T>(
-    result: ServiceResult<T>
-  ): T | IValidationData[] | null {
-    if (result instanceof ServiceSuccessResult) {
-      return result.data;
-    } else if (result instanceof ServiceValidationErrorResult) {
-      return result.validationErrors;
-    } else {
-      return null;
     }
   }
 }
