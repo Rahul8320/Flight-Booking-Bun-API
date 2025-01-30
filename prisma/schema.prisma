@@ -24,11 +24,25 @@ model Airplane {
 }
 
 model City {
-  id      Int     @id @default(autoincrement())
-  name    String  @unique
-  code    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  code      String
+  airports  Airport[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@map("Cities")
+}
+
+model Airport {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  code      String   @unique
+  address   String   @unique
+  cityId    Int
+  city      City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("Airports")
 }
