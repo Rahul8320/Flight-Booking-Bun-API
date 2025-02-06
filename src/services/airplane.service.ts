@@ -17,7 +17,7 @@ export class AirplaneService {
 
   /**
    * @description Create a new airplane
-   * @param {CreateAirplaneInput} input - The airplane input data
+   * @param {ICreateAirplaneInput} input - The airplane input data
    * @returns {Promise<ServiceResult<Airplane>>} Created airplane or validation errors
    */
   async createAirplane(

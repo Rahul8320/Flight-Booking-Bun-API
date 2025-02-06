@@ -10,4 +10,12 @@ export class CityRepository extends BaseRepository<City> {
     });
     return !!city;
   }
+
+  async GetCityByName(cityName: string): Promise<City | null> {
+    const city = await this.prisma[this.modelType].findUnique({
+      where: { name: cityName },
+    });
+
+    return city;
+  }
 }
