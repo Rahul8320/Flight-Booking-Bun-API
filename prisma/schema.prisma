@@ -17,6 +17,7 @@ model Airplane {
   id          Int      @id @default(autoincrement())
   modelNumber String   @unique
   capacity    Int      @default(0)
+  flights     Flight[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -35,14 +36,34 @@ model City {
 }
 
 model Airport {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  code      String   @unique
-  address   String   @unique
-  cityId    Int
-  city      City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               Int      @id @default(autoincrement())
+  name             String   @unique
+  code             String   @unique
+  address          String   @unique
+  cityId           Int
+  city             City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  departureFlights Flight[] @relation("DepartureFlights")
+  arrivalFlights   Flight[] @relation("ArrivalFlights")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   @@map("Airports")
+}
+
+model Flight {
+  id                   Int      @id @default(autoincrement())
+  flightNumber         String
+  airplaneId           Int
+  airplane             Airplane @relation(fields: [airplaneId], references: [id], onDelete: Cascade)
+  departureAirportCode String
+  departureAirport     Airport  @relation("DepartureFlights", fields: [departureAirportCode], references: [code], onDelete: Cascade)
+  arrivalAirportCode   String
+  arrivalAirport       Airport  @relation("ArrivalFlights", fields: [arrivalAirportCode], references: [code], onDelete: Cascade)
+  departureTime        DateTime
+  arrivalTime          DateTime
+  price                Decimal
+  boardingGate         String?
+  totalSeats           Int
+
+  @@map("Flights")
 }
