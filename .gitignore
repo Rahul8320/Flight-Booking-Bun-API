@@ -180,3 +180,5 @@ src/config/config.json
 # SQLite database files
 prisma/*.db
 prisma/*.db-*
+
+.vscode
