@@ -1,4 +1,4 @@
-export class ApiExecption extends Error {
+export class ApiException extends Error {
   public error: Error;
 
   constructor(message: string, error: Error) {

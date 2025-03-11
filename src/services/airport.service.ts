@@ -6,7 +6,7 @@ import {
   ServiceValidationErrorResult,
   type ServiceResult,
 } from "./service-result";
-import { AirportError, ApiExecption } from "../utils";
+import { AirportError, ApiException } from "../utils";
 
 export class AirportService {
   private _airportRepository: AirportRepository;
@@ -55,7 +55,7 @@ export class AirportService {
       const airport = await this._airportRepository.create(airportInput);
       return new ServiceSuccessResult<Airport>(StatusCodes.CREATED, airport);
     } catch (err: any) {
-      throw new ApiExecption("Failed to create airport!", err);
+      throw new ApiException("Failed to create airport!", err);
     }
   }
 }

@@ -5,7 +5,7 @@ import {
   ServiceSuccessResult,
   ServiceValidationErrorResult,
 } from "./service-result";
-import { ApiExecption, CityError } from "../utils";
+import { ApiException, CityError } from "../utils";
 import { StatusCodes, type ICreateCityInput } from "../models";
 
 export class CityService {
@@ -33,7 +33,7 @@ export class CityService {
       const city = await this._cityRepository.create(input);
       return new ServiceSuccessResult<City>(StatusCodes.CREATED, city);
     } catch (err: any) {
-      throw new ApiExecption("Failed to create city!", err);
+      throw new ApiException("Failed to create city!", err);
     }
   }
 
@@ -51,7 +51,7 @@ export class CityService {
 
       return new ServiceSuccessResult<City[]>(StatusCodes.OK, cities);
     } catch (err: any) {
-      throw new ApiExecption("Failed to fetch cities!", err);
+      throw new ApiException("Failed to fetch cities!", err);
     }
   }
 
@@ -70,7 +70,7 @@ export class CityService {
 
       return new ServiceSuccessResult<City>(StatusCodes.OK, city);
     } catch (err: any) {
-      throw new ApiExecption(`Failed to fetch city with id ${id}!`, err);
+      throw new ApiException(`Failed to fetch city with id ${id}!`, err);
     }
   }
 
@@ -90,7 +90,7 @@ export class CityService {
       const deletedCity = await this._cityRepository.delete(id);
       return new ServiceSuccessResult<City>(StatusCodes.OK, deletedCity);
     } catch (err: any) {
-      throw new ApiExecption(`Failed to delete city with id ${id}!`, err);
+      throw new ApiException(`Failed to delete city with id ${id}!`, err);
     }
   }
 }

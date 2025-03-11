@@ -1,6 +1,6 @@
 import { AirplaneRepository } from "../repositories";
 import type { Airplane } from "@prisma/client";
-import { AirplaneError, ApiExecption } from "../utils";
+import { AirplaneError, ApiException } from "../utils";
 import {
   ServiceResult,
   ServiceSuccessResult,
@@ -36,7 +36,7 @@ export class AirplaneService {
       const airplane = await this._airplaneRepository.create(input);
       return new ServiceSuccessResult<Airplane>(StatusCodes.CREATED, airplane);
     } catch (err: any) {
-      throw new ApiExecption("Failed to create airplane!", err);
+      throw new ApiException("Failed to create airplane!", err);
     }
   }
 
@@ -54,7 +54,7 @@ export class AirplaneService {
 
       return new ServiceSuccessResult<Airplane[]>(StatusCodes.OK, airplanes);
     } catch (err: any) {
-      throw new ApiExecption("Failed to fetch airplanes!", err);
+      throw new ApiException("Failed to fetch airplanes!", err);
     }
   }
 
@@ -73,7 +73,7 @@ export class AirplaneService {
 
       return new ServiceSuccessResult<Airplane>(StatusCodes.OK, airplane);
     } catch (err: any) {
-      throw new ApiExecption(`Failed to fetch airplane with id ${id}!`, err);
+      throw new ApiException(`Failed to fetch airplane with id ${id}!`, err);
     }
   }
 
@@ -106,7 +106,7 @@ export class AirplaneService {
         updatedAirplane
       );
     } catch (err: any) {
-      throw new ApiExecption(`Failed to update airplane with id ${id}!`, err);
+      throw new ApiException(`Failed to update airplane with id ${id}!`, err);
     }
   }
 
@@ -129,7 +129,7 @@ export class AirplaneService {
         deletedAirplane
       );
     } catch (err: any) {
-      throw new ApiExecption(`Failed to delete airplane with id ${id}!`, err);
+      throw new ApiException(`Failed to delete airplane with id ${id}!`, err);
     }
   }
 }
