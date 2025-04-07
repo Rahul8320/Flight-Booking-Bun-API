@@ -11,6 +11,6 @@ router.use("/health", healthRoutes);
 router.use("/airplane", airplaneRoutes);
 router.use("/city", cityRoutes);
 router.use("/airport", airportRoutes);
-router.use("/flight", flightRoutes);
+router.use("/flights", flightRoutes);
 
 export default router;

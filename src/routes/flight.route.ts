@@ -13,4 +13,6 @@ router.post(
   flightController.createFlight
 );
 
+router.get("/", flightController.getAllFlights);
+
 export default router;

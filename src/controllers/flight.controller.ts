@@ -1,6 +1,10 @@
 import type { Request, Response } from "express";
 import { logger } from "../config";
-import { StatusCodes, type ICreateFlightInput } from "../models";
+import {
+  getFlightSchema,
+  StatusCodes,
+  type ICreateFlightInput,
+} from "../models";
 import { FlightService } from "../services";
 import {
   FailureResponse,
@@ -16,6 +20,7 @@ export class FlightController {
   constructor() {
     this._flightService = new FlightService();
     this.createFlight = this.createFlight.bind(this);
+    this.getAllFlights = this.getAllFlights.bind(this);
   }
 
   /**
@@ -43,6 +48,70 @@ export class FlightController {
       res
         .status(response.statusCode)
         .json(FailureResponse.ValidationFailure(result as IValidationData[]));
+    } catch (err: any) {
+      logger.error(err.message || "Something wrong happened!", err);
+
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json(
+          FailureResponse.ServerError(
+            err.message || "Something wrong happened!"
+          )
+        );
+
+      return;
+    }
+  }
+
+  /**
+   * @description Get all flights based on query
+   * @param {Request} req - The request object
+   * @param {Response} res - The response object
+   * @returns list of flights
+   */
+  public async getAllFlights(req: Request, res: Response): Promise<void> {
+    try {
+      const validationResult = getFlightSchema.safeParse(req.query);
+
+      if (validationResult.success === false) {
+        const formattedErrors = validationResult.error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        }));
+
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json(
+            FailureResponse.ValidationFailure(
+              formattedErrors as IValidationData[]
+            )
+          );
+
+        return;
+      }
+
+      const response = await this._flightService.getAllFlights(
+        validationResult.data
+      );
+
+      const result = handleResponse(response);
+
+      if (response.statusCode === StatusCodes.OK) {
+        res
+          .status(response.statusCode)
+          .json(SuccessResponse.Fetched(result as Flight[]));
+        return;
+      }
+
+      if (response.statusCode === StatusCodes.BAD_REQUEST) {
+        res
+          .status(response.statusCode)
+          .json(FailureResponse.ValidationFailure(result as IValidationData[]));
+        return;
+      }
+
+      res.status(response.statusCode).json(FailureResponse.ResourceNotFound());
+      return;
     } catch (err: any) {
       logger.error(err.message || "Something wrong happened!", err);
 
