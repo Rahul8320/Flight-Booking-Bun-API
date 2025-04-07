@@ -1,5 +1,9 @@
 import { Prisma, type Flight } from "@prisma/client";
-import { StatusCodes, type ICreateFlightInput } from "../models";
+import {
+  StatusCodes,
+  type ICreateFlightInput,
+  type IGetFlightQuery,
+} from "../models";
 import {
   AirplaneRepository,
   AirportRepository,
@@ -89,6 +93,28 @@ export class FlightService {
       return new ServiceSuccessResult<Flight>(StatusCodes.CREATED, flight);
     } catch (err: any) {
       throw new ApiException("Failed to create flight!", err);
+    }
+  }
+
+  /**
+   * @description Get all flights based on queries
+   * @param query The flight query
+   * @returns {Promise<ServiceResult<Flight[]>>} List of flights or not found
+   */
+  public async getAllFlights(
+    query: IGetFlightQuery
+  ): Promise<ServiceResult<Flight[]>> {
+    try {
+      if (query.arrivalAirportCode === query.departureAirportCode) {
+        return new ServiceValidationErrorResult(StatusCodes.BAD_REQUEST, [
+          FlightError.ServiceError.SameDepartureAndArrivalAirport,
+        ]);
+      }
+
+      const flights = await this._flightRepository.getAllFlights(query);
+      return new ServiceSuccessResult<Flight[]>(StatusCodes.OK, flights);
+    } catch (err: any) {
+      throw new ApiException("Failed to retrieve flights!", err);
     }
   }
 
