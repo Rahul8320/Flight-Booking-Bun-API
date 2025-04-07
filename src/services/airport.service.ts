@@ -26,7 +26,7 @@ export class AirportService {
     input: ICreateAirportInput
   ): Promise<ServiceResult<Airport>> {
     try {
-      const isAirportExists = await this._airportRepository.IsAirportExists(
+      const isAirportExists = await this._airportRepository.isAirportExists(
         input.name,
         input.code
       );
