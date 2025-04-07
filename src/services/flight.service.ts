@@ -1,0 +1,99 @@
+import type { Flight } from "@prisma/client";
+import { StatusCodes, type ICreateFlightInput } from "../models";
+import {
+  AirplaneRepository,
+  AirportRepository,
+  FlightRepository,
+} from "../repositories";
+import {
+  ServiceSuccessResult,
+  ServiceValidationErrorResult,
+  type ServiceResult,
+} from "./service-result";
+import { ApiException, FlightError } from "../utils";
+
+export class FlightService {
+  private _flightRepository: FlightRepository;
+  private _airplaneRepository: AirplaneRepository;
+  private _airportRepository: AirportRepository;
+
+  constructor() {
+    this._flightRepository = new FlightRepository();
+    this._airplaneRepository = new AirplaneRepository();
+    this._airportRepository = new AirportRepository();
+  }
+
+  /**
+   * @description Create a new flight
+   * @param {ICreateFlightInput} input - The flight input data
+   * @returns {Promise<ServiceResult<Flight>>} Created flight or validation errors
+   */
+  public async createFlight(
+    input: ICreateFlightInput
+  ): Promise<ServiceResult<Flight>> {
+    try {
+      const airplane = await this._airplaneRepository.get(input.airplaneId);
+
+      if (airplane === null || airplane.id <= 0) {
+        return new ServiceValidationErrorResult(StatusCodes.NOT_FOUND, [
+          FlightError.ServiceError.AirplaneNotFound,
+        ]);
+      }
+
+      const departureAirport = await this._airportRepository.getAirportByCode(
+        input.departureAirportCode
+      );
+
+      if (departureAirport === null || departureAirport.id <= 0) {
+        return new ServiceValidationErrorResult(StatusCodes.NOT_FOUND, [
+          FlightError.ServiceError.DepartureAirportNotFound,
+        ]);
+      }
+
+      const arrivalAirport = await this._airportRepository.getAirportByCode(
+        input.arrivalAirportCode
+      );
+
+      if (arrivalAirport === null || arrivalAirport.id <= 0) {
+        return new ServiceValidationErrorResult(StatusCodes.NOT_FOUND, [
+          FlightError.ServiceError.ArrivalAirportNotFound,
+        ]);
+      }
+
+      if (input.totalSeats > airplane.capacity) {
+        return new ServiceValidationErrorResult(StatusCodes.BAD_REQUEST, [
+          FlightError.ServiceError.TotalSeatsExceedsAirplaneCapacity,
+        ]);
+      }
+
+      if (
+        this.isArrivalAfterDeparture(input.departureTime, input.arrivalTime)
+      ) {
+        return new ServiceValidationErrorResult(StatusCodes.BAD_REQUEST, [
+          FlightError.ServiceError.ArrivalTimeBeforeDepartureTime,
+        ]);
+      }
+
+      const flight = await this._flightRepository.create({
+        ...input,
+        boardingGate: null,
+      });
+      return new ServiceSuccessResult<Flight>(StatusCodes.CREATED, flight);
+    } catch (err: any) {
+      throw new ApiException("Failed to create flight!", err);
+    }
+  }
+
+  /**
+   * Checks if arrival date/time is after departure date/time
+   * @param departureTime The departure date and time
+   * @param arrivalTime The arrival date and time
+   * @returns Boolean indicating if arrival is after departure
+   */
+  private isArrivalAfterDeparture(
+    departureTime: Date,
+    arrivalTime: Date
+  ): boolean {
+    return arrivalTime.getTime() > departureTime.getTime();
+  }
+}
