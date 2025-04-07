@@ -64,6 +64,8 @@ model Flight {
   price                Decimal
   boardingGate         String?
   totalSeats           Int
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @default(now()) @updatedAt
 
   @@map("Flights")
 }
