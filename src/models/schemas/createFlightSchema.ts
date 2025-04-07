@@ -15,8 +15,18 @@ export const createFlightSchema = z
       .string()
       .min(3)
       .max(4, { message: "Airport code must be 3-4 characters" }),
-    departureTime: z.coerce.date(),
-    arrivalTime: z.coerce.date(),
+    departureTime: z.coerce
+      .date({
+        invalid_type_error:
+          "Invalid datetime format provided for departure date time.",
+      })
+      .transform((date) => new Date(date)),
+    arrivalTime: z.coerce
+      .date({
+        invalid_type_error:
+          "Invalid datetime format provided for arrival date time.",
+      })
+      .transform((date) => new Date(date)),
     price: z.coerce
       .number()
       .finite({ message: "Price must be a finite number" })

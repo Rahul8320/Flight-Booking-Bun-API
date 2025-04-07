@@ -67,7 +67,8 @@ export class FlightService {
       }
 
       if (
-        this.isArrivalAfterDeparture(input.departureTime, input.arrivalTime)
+        this.isArrivalAfterDeparture(input.departureTime, input.arrivalTime) ===
+        false
       ) {
         return new ServiceValidationErrorResult(StatusCodes.BAD_REQUEST, [
           FlightError.ServiceError.ArrivalTimeBeforeDepartureTime,
@@ -95,6 +96,9 @@ export class FlightService {
     departureTime: Date,
     arrivalTime: Date
   ): boolean {
-    return arrivalTime.getTime() > departureTime.getTime();
+    const arrivalDate = new Date(arrivalTime);
+    const departureDate = new Date(departureTime);
+
+    return arrivalDate.getTime() > departureDate.getTime();
   }
 }

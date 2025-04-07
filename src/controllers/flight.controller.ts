@@ -26,7 +26,7 @@ export class FlightController {
    */
   public async createFlight(req: Request, res: Response): Promise<void> {
     try {
-      const input: ICreateFlightInput = req.body;
+      const input: ICreateFlightInput = req.body as ICreateFlightInput;
 
       const response = await this._flightService.createFlight(input);
 
