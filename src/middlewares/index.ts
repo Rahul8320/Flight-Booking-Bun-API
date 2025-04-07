@@ -7,6 +7,7 @@ import {
 import { validateCreateCity, validateCityId } from "./city-middleware";
 
 import { validateAirportId, validateCreateAirport } from "./airport-middleware";
+import { validateRequest } from "./validateRequest-middleware";
 
 export {
   validateCreateAirplane,
@@ -16,4 +17,5 @@ export {
   validateCityId,
   validateAirportId,
   validateCreateAirport,
+  validateRequest,
 };
