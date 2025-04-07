@@ -74,10 +74,7 @@ export class FlightService {
         ]);
       }
 
-      const flight = await this._flightRepository.create({
-        ...input,
-        boardingGate: null,
-      });
+      const flight = await this._flightRepository.create(input);
       return new ServiceSuccessResult<Flight>(StatusCodes.CREATED, flight);
     } catch (err: any) {
       throw new ApiException("Failed to create flight!", err);

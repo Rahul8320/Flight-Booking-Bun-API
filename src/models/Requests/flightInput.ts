@@ -9,4 +9,5 @@ export interface ICreateFlightInput {
   arrivalTime: Date;
   price: Decimal;
   totalSeats: number;
+  boardingGate: string | null;
 }
