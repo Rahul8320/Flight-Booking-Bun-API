@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { logger } from "../config";
 import { StatusCodes, type ICreateFlightInput } from "../models";
-import type { FlightService } from "../services";
+import { FlightService } from "../services";
 import {
   FailureResponse,
   handleResponse,
@@ -13,8 +13,8 @@ import type { Flight } from "@prisma/client";
 export class FlightController {
   private _flightService: FlightService;
 
-  constructor(flightService: FlightService) {
-    this._flightService = flightService;
+  constructor() {
+    this._flightService = new FlightService();
     this.createFlight = this.createFlight.bind(this);
   }
 
