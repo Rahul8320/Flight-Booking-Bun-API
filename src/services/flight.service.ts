@@ -1,4 +1,4 @@
-import type { Flight } from "@prisma/client";
+import { Prisma, type Flight } from "@prisma/client";
 import { StatusCodes, type ICreateFlightInput } from "../models";
 import {
   AirplaneRepository,
@@ -74,7 +74,11 @@ export class FlightService {
         ]);
       }
 
-      const flight = await this._flightRepository.create(input);
+      const flight = await this._flightRepository.create({
+        ...input,
+        price: new Prisma.Decimal(input.price),
+        boardingGate: input?.boardingGate ?? "N/A",
+      });
       return new ServiceSuccessResult<Flight>(StatusCodes.CREATED, flight);
     } catch (err: any) {
       throw new ApiException("Failed to create flight!", err);
