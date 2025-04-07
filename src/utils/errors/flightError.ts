@@ -20,5 +20,9 @@ export class FlightError {
       field: "arrivalTime",
       message: "Arrival time must be after departure time!",
     },
+    SameDepartureAndArrivalAirport: {
+      field: "arrivalAirportCode",
+      message: "Departure and arrival airports can not be the same!",
+    },
   };
 }

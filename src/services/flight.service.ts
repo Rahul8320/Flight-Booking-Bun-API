@@ -40,6 +40,12 @@ export class FlightService {
         ]);
       }
 
+      if (input.departureAirportCode === input.arrivalAirportCode) {
+        return new ServiceValidationErrorResult(StatusCodes.BAD_REQUEST, [
+          FlightError.ServiceError.SameDepartureAndArrivalAirport,
+        ]);
+      }
+
       const departureAirport = await this._airportRepository.getAirportByCode(
         input.departureAirportCode
       );
