@@ -105,15 +105,31 @@ export class FlightService {
     query: IGetFlightQuery
   ): Promise<ServiceResult<Flight[]>> {
     try {
+      const customFilter: any = {
+        price: {},
+      };
+
       if (query.arrivalAirportCode === query.departureAirportCode) {
         return new ServiceValidationErrorResult(StatusCodes.BAD_REQUEST, [
           FlightError.ServiceError.SameDepartureAndArrivalAirport,
         ]);
       }
 
-      const flights = await this._flightRepository.getAllFlights(query);
+      customFilter.arrivalAirportCode = query.arrivalAirportCode;
+      customFilter.departureAirportCode = query.departureAirportCode;
+
+      if (query.minPrice) {
+        customFilter.price.gte = query.minPrice;
+      }
+
+      if (query.maxPrice) {
+        customFilter.price.lte = query.maxPrice;
+      }
+
+      const flights = await this._flightRepository.getAllFlights(customFilter);
       return new ServiceSuccessResult<Flight[]>(StatusCodes.OK, flights);
     } catch (err: any) {
+      console.log(err);
       throw new ApiException("Failed to retrieve flights!", err);
     }
   }

@@ -10,10 +10,16 @@ export const getFlightSchema = z
       .string()
       .min(3)
       .max(4, { message: "Airport code must be 3-4 characters" }),
-    price: z.coerce
+    minPrice: z.coerce
       .number()
-      .finite({ message: "Price must be a finite number" })
-      .positive({ message: "Price must be a positive number" })
+      .finite({ message: "Min Price must be a finite number" })
+      .positive({ message: "Min Price must be a positive number" })
+      .optional()
+      .default(1),
+    maxPrice: z.coerce
+      .number()
+      .finite({ message: "Max Price must be a finite number" })
+      .positive({ message: "Max Price must be a positive number" })
       .optional(),
   })
   .strict();
