@@ -105,17 +105,18 @@ export class FlightService {
     query: IGetFlightQuery
   ): Promise<ServiceResult<Flight[]>> {
     try {
-      const customFilter: any = {
+      const customFilters: any = {
         totalSeats: {},
       };
+      let sortFilters: any[] = [];
 
       const trips = query.trips.split("-");
-      customFilter.departureAirportCode = trips[0];
-      customFilter.arrivalAirportCode = trips[1];
-      customFilter.totalSeats.gte = query.travelers;
+      customFilters.departureAirportCode = trips[0];
+      customFilters.arrivalAirportCode = trips[1];
+      customFilters.totalSeats.gte = query.travelers;
 
       if (
-        customFilter.arrivalAirportCode === customFilter.departureAirportCode
+        customFilters.arrivalAirportCode === customFilters.departureAirportCode
       ) {
         return new ServiceValidationErrorResult(StatusCodes.BAD_REQUEST, [
           FlightError.ServiceError.SameDepartureAndArrivalAirport,
@@ -125,7 +126,7 @@ export class FlightService {
       if (query.price) {
         const [minPrice, maxPrice] = query.price.split("-").map(Number);
 
-        customFilter.price = {
+        customFilters.price = {
           gte: minPrice,
           lte: maxPrice,
         };
@@ -137,13 +138,23 @@ export class FlightService {
         const startDate = new Date(year, month - 1, day, 0, 0, 0);
         const endDate = new Date(year, month - 1, day, 23, 59, 59);
 
-        customFilter.departureTime = {
+        customFilters.departureTime = {
           gte: startDate,
           lte: endDate,
         };
       }
 
-      const flights = await this._flightRepository.getAllFlights(customFilter);
+      if (query.sort) {
+        sortFilters = query.sort.split(",").map((item) => {
+          const [field, direction] = item.trim().split("_");
+          return { [field]: direction === "ASC" ? "asc" : "desc" };
+        });
+      }
+
+      const flights = await this._flightRepository.getAllFlights(
+        customFilters,
+        sortFilters
+      );
       return new ServiceSuccessResult<Flight[]>(StatusCodes.OK, flights);
     } catch (err: any) {
       console.log(err);

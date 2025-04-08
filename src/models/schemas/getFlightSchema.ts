@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const supportedSortFields: string[] = ["price", "departureTime", "arrivalTime"];
+
 export const getFlightSchema = z
   .object({
     trips: z.string().regex(/^([a-zA-Z0-9]{3,4})-([a-zA-Z0-9]{3,4})$/, {
@@ -41,6 +43,43 @@ export const getFlightSchema = z
     depart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
       message: "Depart date must be in 'YYYY-MM-DD' format.",
     }),
+    sort: z
+      .string()
+      .optional()
+      .refine(
+        (sortString) => {
+          if (!sortString) {
+            return true;
+          }
+
+          const sortCriteria = sortString.split(",");
+
+          for (const criterion of sortCriteria) {
+            const parts = criterion.trim().split("_");
+
+            if (parts.length !== 2) {
+              return false;
+            }
+
+            const [field, direction] = parts;
+
+            if (!supportedSortFields.includes(field)) {
+              return false;
+            }
+
+            if (direction !== "ASC" && direction !== "DESC") {
+              return false;
+            }
+          }
+
+          return true;
+        },
+        {
+          message: `Sort must be in the format "fieldName_ASC|DESC,fieldName_ASC|DESC,...". Supported fields are: ${supportedSortFields.join(
+            ", "
+          )}`,
+        }
+      ),
   })
   .strict();
 
