@@ -13,6 +13,7 @@ import {
   type IValidationData,
 } from "../utils";
 import type { Flight } from "@prisma/client";
+import type { FlightDTO } from "../DTOs";
 
 export class FlightController {
   private _flightService: FlightService;
@@ -99,7 +100,7 @@ export class FlightController {
       if (response.statusCode === StatusCodes.OK) {
         res
           .status(response.statusCode)
-          .json(SuccessResponse.Fetched(result as Flight[]));
+          .json(SuccessResponse.Fetched(result as FlightDTO[]));
         return;
       }
 

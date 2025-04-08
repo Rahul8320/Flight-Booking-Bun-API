@@ -15,6 +15,7 @@ import {
   type ServiceResult,
 } from "./service-result";
 import { ApiException, FlightError } from "../utils";
+import type { FlightDTO } from "../DTOs";
 
 export class FlightService {
   private _flightRepository: FlightRepository;
@@ -103,7 +104,7 @@ export class FlightService {
    */
   public async getAllFlights(
     query: IGetFlightQuery
-  ): Promise<ServiceResult<Flight[]>> {
+  ): Promise<ServiceResult<FlightDTO[]>> {
     try {
       const customFilters: any = {
         totalSeats: {},
@@ -155,7 +156,7 @@ export class FlightService {
         customFilters,
         sortFilters
       );
-      return new ServiceSuccessResult<Flight[]>(StatusCodes.OK, flights);
+      return new ServiceSuccessResult<FlightDTO[]>(StatusCodes.OK, flights);
     } catch (err: any) {
       console.log(err);
       throw new ApiException("Failed to retrieve flights!", err);
