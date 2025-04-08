@@ -2,25 +2,45 @@ import { z } from "zod";
 
 export const getFlightSchema = z
   .object({
-    departureAirportCode: z
+    trips: z.string().regex(/^([a-zA-Z0-9]{3,4})-([a-zA-Z0-9]{3,4})$/, {
+      message:
+        "Trips must be in the format 'departure-arrival', with each code being 3-4 characters.",
+    }),
+    price: z
       .string()
-      .min(3)
-      .max(4, { message: "Airport code must be 3-4 characters" }),
-    arrivalAirportCode: z
-      .string()
-      .min(3)
-      .max(4, { message: "Airport code must be 3-4 characters" }),
-    minPrice: z.coerce
+      .optional()
+      .refine(
+        (val) => {
+          if (!val) return true;
+          const parts = val.split("-");
+          if (parts.length !== 2) return false;
+          const [minStr, maxStr] = parts;
+          const min = Number(minStr);
+          const max = Number(maxStr);
+          return (
+            !isNaN(min) &&
+            Number.isFinite(min) &&
+            min > 0 &&
+            !isNaN(max) &&
+            Number.isFinite(max) &&
+            max > 0 &&
+            min <= max
+          );
+        },
+        {
+          message:
+            "Price must be in the format 'min-max', with both being non-negative finite numbers, and minPrice <= maxPrice.",
+        }
+      ),
+    travelers: z.coerce
       .number()
-      .finite({ message: "Min Price must be a finite number" })
-      .positive({ message: "Min Price must be a positive number" })
+      .finite({ message: "Travelers must be a finite number" })
+      .positive({ message: "Travelers must be a positive number" })
       .optional()
       .default(1),
-    maxPrice: z.coerce
-      .number()
-      .finite({ message: "Max Price must be a finite number" })
-      .positive({ message: "Max Price must be a positive number" })
-      .optional(),
+    depart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
+      message: "Depart date must be in 'YYYY-MM-DD' format.",
+    }),
   })
   .strict();
 

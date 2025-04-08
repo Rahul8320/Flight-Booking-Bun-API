@@ -106,24 +106,41 @@ export class FlightService {
   ): Promise<ServiceResult<Flight[]>> {
     try {
       const customFilter: any = {
-        price: {},
+        totalSeats: {},
       };
 
-      if (query.arrivalAirportCode === query.departureAirportCode) {
+      const trips = query.trips.split("-");
+      customFilter.departureAirportCode = trips[0];
+      customFilter.arrivalAirportCode = trips[1];
+      customFilter.totalSeats.gte = query.travelers;
+
+      if (
+        customFilter.arrivalAirportCode === customFilter.departureAirportCode
+      ) {
         return new ServiceValidationErrorResult(StatusCodes.BAD_REQUEST, [
           FlightError.ServiceError.SameDepartureAndArrivalAirport,
         ]);
       }
 
-      customFilter.arrivalAirportCode = query.arrivalAirportCode;
-      customFilter.departureAirportCode = query.departureAirportCode;
+      if (query.price) {
+        const [minPrice, maxPrice] = query.price.split("-").map(Number);
 
-      if (query.minPrice) {
-        customFilter.price.gte = query.minPrice;
+        customFilter.price = {
+          gte: minPrice,
+          lte: maxPrice,
+        };
       }
 
-      if (query.maxPrice) {
-        customFilter.price.lte = query.maxPrice;
+      if (query.depart) {
+        const [year, month, day] = query.depart.split("-").map(Number);
+
+        const startDate = new Date(year, month - 1, day, 0, 0, 0);
+        const endDate = new Date(year, month - 1, day, 23, 59, 59);
+
+        customFilter.departureTime = {
+          gte: startDate,
+          lte: endDate,
+        };
       }
 
       const flights = await this._flightRepository.getAllFlights(customFilter);
